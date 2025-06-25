@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  devbox:
+    build: .
+    container_name: fullstack-dev
+    ports:
+      - "3000:3000"   # React
+      - "4200:4200"   # Angular
+      - "5173:5173"   # Vue / Vite
+      - "3001:3001"   # NestJS
+      - "8080:8080"   # misc
+      - "5000:5000"   # Tailwind preview, etc.
+    volumes:
+      - .:/app
+      - /app/node_modules
+    tty: true

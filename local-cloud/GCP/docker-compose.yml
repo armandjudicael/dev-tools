@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  # 1. Pub/Sub Emulator
+  pubsub:
+    image: messagebird/gcloud-pubsub-emulator
+    container_name: gcp-pubsub
+    ports:
+      - "8085:8085"
+    environment:
+      PUBSUB_PROJECT_ID: local-gcp
+
+  # 2. Firestore Emulator
+  firestore:
+    image: mtlynch/firestore-emulator
+    container_name: gcp-firestore
+    ports:
+      - "8088:8088"
+    environment:
+      FIRESTORE_PROJECT_ID: local-gcp
+
+  # 3. Datastore Emulator
+  datastore:
+    image: google/cloud-sdk:latest
+    container_name: gcp-datastore
+    command: gcloud beta emulators datastore start --host-port=0.0.0.0:8081
+    environment:
+      - CLOUDSDK_CORE_PROJECT=my-local-project
+    ports:
+      - "8081:8081"
+
+  # 4. Bigtable Emulator
+  bigtable:
+    image: google/cloud-sdk:latest
+    container_name: gcp-bigtable
+    command: gcloud beta emulators bigtable start --host-port=0.0.0.0:8086
+    ports:
+      - "8086:8086"
+
+  # 5. Cloud Storage Emulator (Fake GCS Server)
+  gcs:
+    image: fsouza/fake-gcs-server
+    container_name: gcp-gcs
+    ports:
+      - "4443:4443"
+    command: -scheme http -port 4443 -external-url http://localhost:4443
+    volumes:
+      - ./fake-gcs:/data
+
+  # 6. Cloud Functions (Functions Framework Python Example)
+  cloudfunctions:
+    build:
+      context: ./functions
+      dockerfile: Dockerfile
+    container_name: gcp-functions
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./functions:/app
