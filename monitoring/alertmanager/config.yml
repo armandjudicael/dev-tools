@@ -1,0 +1,16 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  receiver: 'default'
+
+receivers:
+  - name: 'default'
+    email_configs:
+      - to: 'test_notification@example.com'
+        from: 'alert@example.com'
+        smarthost: 'smtp.test.example.com:465'
+        auth_username: 'test_smtp_username@example.com'
+        auth_password: 'test_smtp_password'
+        require_tls: true
