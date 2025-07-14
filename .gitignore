@@ -1,0 +1,28 @@
+# ORACLE
+./ORACLE/oradata
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.DS_Store
+.env
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pdb
+*.env
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+# IDE
+.vscode/
+.idea/
+
+
+
