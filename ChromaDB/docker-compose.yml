@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  chromadb:
+    image: ghcr.io/chroma-core/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"  # Expose ChromaDB API on localhost:8000
+    volumes:
+      - chroma_data:/chroma/.chroma  # Persist data
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE  # Optional: disable telemetry
+
+volumes:
+  chroma_data:
