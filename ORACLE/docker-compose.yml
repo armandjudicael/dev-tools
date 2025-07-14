@@ -10,7 +10,7 @@ services:
     environment:
       ORACLE_SID: ORA8
       ORACLE_PDB: ORA8S
-      ORACLE_PWD: Aj!30071999
+      ORACLE_PWD: password
       ORACLE_EDITION: enterprise
       ORACLE_CHARACTERSET: AL32UTF8
       ENABLE_ARCHIVELOG: "true"
