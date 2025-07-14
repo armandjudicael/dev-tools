@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  devbox:
+    build: .
+    container_name: fullstack-dev
+    ports:
+      - "3000:3000"   # React, Next.js
+      - "4200:4200"   # Angular
+      - "5173:5173"   # Vue, Vite
+      - "3001:3001"   # NestJS
+      - "8080:8080"   # Spring Boot, Quarkus, general dev server
+      - "5000:5000"   # Flask, general dev server
+      - "3333:3333"   # Often used for databases or other services
+    volumes:
+      # Anonymous volume for node_modules: This prevents host node_modules from conflicting
+      # with container's, and avoids performance issues on macOS/Windows.
+      - /app/node_modules
+      # Mount your local project code into the container.
+      # Replace 'path/to/your/local/project' with the actual path on your host.
+      # The container will see this code at /app/project_code
+      - ./app:/app/
+    tty: true
+    # Keeps the container running in the foreground so you can attach to it later.
+    # Essential for a dev container where you'll exec into it.
+    stdin_open: true # Equivalent to -i in docker run, keeps stdin open
+    # Command to run when the container starts. 'bash' is good for a dev box.
+    command: bash

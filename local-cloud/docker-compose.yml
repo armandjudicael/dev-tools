@@ -1,0 +1,92 @@
+version: "3.8"
+
+services:
+  # 🌩️ AWS LOCALSTACK
+  aws:
+    container_name: localstack
+    image: localstack/localstack:3.3  # Use a stable pinned version for consistency
+    ports:
+      - "4566:4566"   # Edge port for all services
+      - "4571:4571"   # Deprecated; still included if needed
+    environment:
+      SERVICES: s3,sqs,sns,dynamodb,lambda,iam,apigateway,cloudformation,sts,secretsmanager,cloudwatch,logs,ecr,route53,events
+      DEBUG: 1
+      DATA_DIR: /tmp/localstack/data
+      DOCKER_HOST: unix:///var/run/docker.sock
+    volumes:
+      - ./localstack:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - devnet
+
+networks:
+  devnet:
+    driver: bridge
+
+  # ☁️ GCP EMULATORS
+  gcp-pubsub:
+    container_name: gcp-pubsub-emulator
+    image: google/cloud-sdk:latest
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    ports:
+      - "8085:8085"
+    restart: unless-stopped
+    networks:
+      - devnet
+
+  gcp-firestore:
+    container_name: gcp-firestore-emulator
+    image: google/cloud-sdk:latest
+    command: gcloud beta emulators firestore start --host-port=0.0.0.0:8083
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    networks:
+      - devnet
+
+  gcp-spanner:
+    container_name: gcp-spanner-emulator
+    image: gcr.io/cloud-spanner-emulator/emulator
+    ports:
+      - "9010:9010"
+      - "9020:9020"
+    restart: unless-stopped
+    networks:
+      - devnet
+
+  # 🔵 AZURE EMULATORS
+
+  azure-storage:
+    container_name: azurite
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    ports:
+      - "10000:10000"  # Blob
+      - "10001:10001"  # Queue
+      - "10002:10002"  # Table
+    volumes:
+      - "./azurite:/data"
+    command: "azurite --location /data --debug /data/debug.log"
+    restart: unless-stopped
+    networks:
+      - devnet
+
+  azure-functions:
+    container_name: azure-functions
+    image: mcr.microsoft.com/azure-functions/dotnet:4
+    ports:
+      - "7071:80"
+    volumes:
+      - "./functions:/home/site/wwwroot"
+    restart: unless-stopped
+    networks:
+      - devnet
+ 
+networks:
+  devnet:
+    driver: bridge

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    restart: unless-stopped
+
+  cassandra-ui:
+    image: instaclustr/cassandra-ui:latest
+    container_name: cassandra-ui
+    ports:
+      - "9090:9090"
+    environment:
+      - CASSANDRA_HOSTS=cassandra
+    depends_on:
+      - cassandra
+    restart: unless-stopped
+
+volumes:
+  cassandra_data:

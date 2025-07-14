@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    container_name: oracle_db_container
+    image: container-registry.oracle.com/database/enterprise:latest
+    ports:
+      - "1521:1521"   # SQL*Net port
+      - "5500:5500"   # Oracle Enterprise Manager Express
+    environment:
+      ORACLE_SID: ORA8
+      ORACLE_PDB: ORA8S
+      ORACLE_PWD: Aj!30071999
+      ORACLE_EDITION: enterprise
+      ORACLE_CHARACTERSET: AL32UTF8
+      ENABLE_ARCHIVELOG: "true"
+    volumes:
+      - ./oradata:/opt/oracle/oradata
+    restart: unless-stopped

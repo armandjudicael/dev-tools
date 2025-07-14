@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  java-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sdkman-dev
+    volumes:
+      - ./projects:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
